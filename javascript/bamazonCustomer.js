@@ -1,6 +1,8 @@
+//PACKAGES USED
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 
+//CONNECTING TO MYSQL
 var connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
@@ -18,20 +20,33 @@ connection.connect(function(err) {
   viewProducts();
 });
 
-//Populate this database with around 10 different products. (i.e. Insert "mock" data rows into this database and table).
+//Displays Inventory
 function viewProducts() {
     var query = "SELECT * FROM products";
     connection.query(query, function(err, res) {
-        for (var i = 0; i < res.length; i++) {
-            console.log("id: " + res[i].id + "--[" + "Product Name: " + res[i].product_name + "]---------[" + "Department Name: " + 
-            res[i].department_name + "]---------[" + "Price: " + res[i].price + "]---------[" + "Stock Quantity: " + res[i].stock_quantity + "]");
-        }
-        console.log('\n');
+        console.log("\n");
+
+
+        console.log("ID" + " |        " + "PRODUCT NAME" + "       |       " + "DEPARTMENT NAME" + "      | " + "PRICE" + " | " + "STOCK QUANTITY");
+        console.log("------------------------------------------------------------------------------------");
+        // for (var i = 0; i < res.length; i++) {
+            // console.log("id: " + res[i].id + "--[" + "Product Name: " + res[i].product_name + "]---------[" + "Department Name: " + 
+            // res[i].department_name + "]---------[" + "Price: " + res[i].price + "]---------[" + "Stock Quantity: " + res[i].stock_quantity + "]");
+            console.log(res[0].id + " | " +  res[0].product_name + "              | " + res[0].department_name + "            | " + res[0].price + " |      " + res[0].stock_quantity);
+            console.log(res[1].id + " | " +  res[1].product_name + "           | " + res[1].department_name + "            |   " + res[1].price + "   |      " + res[1].stock_quantity);
+            console.log(res[2].id + " | " +  res[2].product_name + "     | " + res[2].department_name + "             |   " + res[2].price + "  |      " + res[2].stock_quantity);
+            console.log(res[3].id + " | " +  res[3].product_name + "                     | " + res[3].department_name + "  | " + res[3].price + " |      " + res[3].stock_quantity);
+            console.log(res[4].id + " | " +  res[4].product_name + "               | " + res[4].department_name + "                 | " + res[4].price + "  |      " + res[4].stock_quantity);
+            console.log(res[5].id + " | " +  res[5].product_name + "     | " + res[5].department_name + "    | " + res[5].price + " |      " + res[5].stock_quantity);
+            console.log(res[6].id + " | " +  res[6].product_name + " | " + res[6].department_name + "               | " + res[6].price + " |      " + res[6].stock_quantity);
+            console.log(res[7].id + " | " +  res[7].product_name + "               | " + res[7].department_name + "          | " + res[7].price + "  |      " + res[7].stock_quantity);
+            console.log(res[8].id + " | " +  res[8].product_name + " | " + res[8].department_name + "                      | " + res[8].price + "  |      " + res[8].stock_quantity);
+            console.log(res[9].id + " | " +  res[9].product_name + "         | " + res[9].department_name + "                      | " + res[9].price + " |      " + res[9].stock_quantity);
+        // }
         itemSelection();
     });
 }
-
-//The app should then prompt users with two messages.
+//Bamazon will first give you a choice to pick the ID of the product, then ask you to select the number of units for the product
 function itemSelection() {
     inquirer
         .prompt([
@@ -49,36 +64,31 @@ function itemSelection() {
             }
         ])
         .then(function(answer) {
-            //Once the customer has placed the order, your application should check if your store has enough of the product to meet the customer's request.
-    //If not, the app should log a phrase like Insufficient quantity!, and then prevent the order from going through.
-    //However, if your store does have enough of the product, you should fulfill the customer's order.
-    // This means updating the SQL database to reflect the remaining quantity.
-    // Once the update goes through, show the customer the total cost of their purchase.
-
-    // function item11() {
         var query = "SELECT * FROM products WHERE id =" + answer.item; //query table products, stock_quantity
         var updatedQuantity;
         connection.query(query, function(err, res) {
             if (answer.unit <= res[0].stock_quantity) {
                 updatedQuantity = res[0].stock_quantity - answer.unit;
-                console.log("Your cost is: " + (answer.unit * res[0].price));
-                updateStock();
+                console.log("\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n");
+                console.log("-------------------------------------------");
+                console.log(">>>>>>>>>> YOUR BALANCE: $" + (answer.unit * res[0].price)+ " <<<<<<<<<<<");
+                console.log("-------------------------------------------");                                                
+                var item = answer.item;
+                updateStock(updatedQuantity, item);
             }
             else {
                 return console.log("Insufficient quantity!");
             }        
         });
         //Updates stock quantity
-            function updateStock() {
-                var query = "UPDATE products SET stock_quantity = " + updatedQuantity + "WHERE id =" + answer.item;
-                connection.query(query, function(err, res) {
-                    console.log("Stock Quantity is now: " + updatedQuantity);
-                    console.log("\n");
-                    itemSelection();
-                });
-                
-            }    
+           
         });
-    }        
-    
-// If this activity took you between 8-10 hours, then you've put enough time into this assignment. Feel free to stop here -- unless you want to take on the next challenge.
+    }
+
+    function updateStock(updatedQuantity, item) {
+        var query = "UPDATE products SET stock_quantity = " + "'" + updatedQuantity + "' " + "WHERE id =" + " '" + item + "'" + ";";
+        connection.query(query, function(err, res) {
+            console.log("What would else would you like to buy?");
+            viewProducts();                                
+        });     
+    }    
