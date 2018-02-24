@@ -6,6 +6,6 @@ This CLI application allows the customer to view Bamazon's inventory, select an 
 
 ## Node Packages Used
 
-* Twitter
+* MySQL
 
-* Spotify
+* Inquirer
