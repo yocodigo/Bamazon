@@ -1,6 +1,6 @@
 const mysql = require('mysql'),       
    inquirer = require('inquirer'), 
-       key	= require('./key');
+        key = require('./key');
    
 //CONNECTING TO MYSQL
 const connection = mysql.createConnection({
